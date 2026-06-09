@@ -7,16 +7,16 @@ def display_board(board):
     print("--+---+--")
     print(f"{board[6]} | {board[7]} | {board[8]}")
 def player_choice():
-    symbol = ' '
-    while symbol in ['X', 'O']:
+    symbol = ''
+    while symbol not in ['X', 'O']:
         symbol = input("Choose your symbol (X/O): ").upper()
     if symbol == 'X':
-        return 'X', 'O'
+        return ('X', 'O')
     else:
-        return 'O', 'X'
+        return ('O', 'X')
 def player_move(board, symbol):
     move = -1
-    while move not in range(1, 10) or board[move - 1].isdigit():
+    while move not in range(1, 10) or not board[move - 1].isdigit():
         try:
             move = int(input(f"Choose your move (1-9): "))
             if move not in range(1, 10) or not board[move - 1].isdigit():
@@ -44,9 +44,9 @@ def ai_move(board, ai_symbol, player_symbol):
     board[move] = ai_symbol
 def check_win(board, symbol):
     win_conditions = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        [0, 4, 8], [2, 4, 6]
+        (0, 1, 2), (3, 4, 5), (6, 7, 8),
+        (0, 3, 6), (1, 4, 7), (2, 5, 8),
+        (0, 4, 8), (2, 4, 6)
     ]
     for cond in win_conditions:
         if board[cond[0]] == board[cond[1]] == board[cond[2]] == symbol:
