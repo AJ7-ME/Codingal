@@ -66,4 +66,4 @@ def main():
     cv2.destroyAllWindows()
 if __name__ == "__main__":
     main()
-    #End Of Codet
+    #End Of Code
