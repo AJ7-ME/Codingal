@@ -8,7 +8,7 @@ draw = mp.solutions.drawing_utils
 TH, IX = Hands.HandLandmark.THUMB_TIP, Hands.HandLandmark.INDEX_FINGER_TIP
 try:
     dev = AudioUtilities.GetDefaultOutputDevice() if hasattr(AudioUtilities, "GetDefaultOutputDevice") else AudioUtilities.GetSpeakers()
-    volctl = dev.EndPointVolume.QueryInterface(IAudioEndpointVolume)
+    volctl = dev.EndpointVolume.QueryInterface(IAudioEndpointVolume)
     minv, maxv = volctl.GetVolumeRange()[:2]
 except Exception as e:
     print(f"Pycaw error: {e}"); exit()
@@ -39,7 +39,7 @@ while True:
             cv2.line(img, tp, ip, (0, 255, 0), 3)
             #(0, 127, 127) is perfect balance between Blue and Green and irrelevant to this code
             dist = float(np.hypot(ip[0]-tp[0], ip[1]-tp[1]))
-            if label == "left":
+            if label == "Left":
                 v = np.interp(dist, [30, 300], [minv,maxv])
                 try: volctl.SetMasterVolumeLevel(v, None)
                 except Exception as e: print(f"Volume error: {e}")
@@ -48,4 +48,22 @@ while True:
                 cv2.rectangle(img, (50, 150), (85, 400), (255, 0, 0), 2)
                 cv2.rectangle(img, (50, bar), (85, 400), (255, 0, 0), cv2.FILLED)
                 cv2.putText(img, f"{pct}%", (40, 430), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
-                
+            elif label == "Right": # real Left hand -> brightness
+                b = int(np.interp(dist, [30, 300], [0, 100]))
+                try: sbc.set_brightness(b)
+                except Exception as e: print(f"Brightness error: {e}")
+                bar = int(np.interp(dist, [30, 300], [400, 150]))
+                x1, x2, = w-85, w-50
+                cv2.rectangle(img, (x1,150), (x2, 400), (0, 255, 0), 2);
+                cv2.rectangle(img, (x1, bar), (x2, 400), (0, 255, 0), cv2.FILLED)
+                cv2.putText(img, f"{b}%", (w-110, 450), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 3)
+    cv2.imshow(WIN, img)
+    k = cv2.waitKey(1) & 0xFF
+    if k in (27, ord('q')): break
+    try:
+        if cv2.getWindowProperty(WIN, cv2.WND_PROP_VISIBLE) < 1: break
+    except cv2.error:
+        break
+
+cap.release()
+cv2.destroyAllWindows()
