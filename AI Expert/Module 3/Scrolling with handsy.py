@@ -8,8 +8,8 @@ hands = mp_hands.Hands(max_num_hands=1, min_detection_confidence=0.7)
 mp_drawings = mp.solutions.drawing_utils
 
 #Configurations / Settings
-SCROLL_SPEED = 40
-SCROLL_DELAY = 0.1
+SCROLL_SPEED = 10     #10 for normal scrolling, 90 for YT shorts
+SCROLL_DELAY = 0      #0 for normal scrolling, 5 for YT shorts
 CAM_WIDTH = 640
 CAM_HEIGHT = 480
 #Configurations / Settings
@@ -17,9 +17,9 @@ CAM_HEIGHT = 480
 def detect_gesture(landmarks, handedness):
     fingers = []
     tips = [mp_hands.HandLandmark.INDEX_FINGER_TIP, mp_hands.HandLandmark.MIDDLE_FINGER_TIP, mp_hands.HandLandmark.RING_FINGER_TIP, mp_hands.HandLandmark.PINKY_TIP]
-    for tips in tips:
-        # This checksis the fingertip is above the fingerjoint, Therefore the finger is considered open
-        if landmarks[tips].y < landmarks[tips - 2].y:
+    for tip in tips:
+        # This checks if the fingertip is above the finger joint, Therefore the finger is considered open
+        if landmarks.landmark[tip].y < landmarks.landmark[tip - 2].y:
             fingers.append(1)
 
     thumb_tip = landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP]
@@ -35,7 +35,7 @@ cap.set(4, CAM_HEIGHT)
 #Last scroll : Stores the time when previous scroll was made, to prevent too many scrolls in a short time
 last_scroll = p_time = 0
 print("Press 'q' to exit")
-while cap.isopened():
+while cap.isOpened():
     success, img = cap.read()
     if not success: break
 
