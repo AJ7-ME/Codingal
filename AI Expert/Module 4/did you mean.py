@@ -21,7 +21,7 @@ def show_menu():
     print(f"{'No.':<5}{'Item':<20}{'Price ($)':>10}")
     print("-" * 40)
     for number, (food, price) in enumerate(MENU.items(), start=1):
-        print(f"{number:<5}{food:<20}{price:>10}")
+        print(f"{number:<5}{food.title():<20}{price:>10}")
 
     print("=" * 40)
 def edit_distance(word1, word2):
@@ -52,8 +52,8 @@ def suggest_food(query):
     for food in MENU:
         distance = edit_distance(query, food)
         ranked.append((distance, food))
-        ranked.sort()
-        return ranked[:3]
+    ranked.sort()
+    return ranked[:3]
 
 def search_food(query):
     query = query.lower().strip()
@@ -69,7 +69,7 @@ def search_food(query):
     best_distance, best_food = suggestions[0]
     print("\nDid you mean:", best_food.title())
     print("Other suggestions:")
-    for number, (distance, food) in enumerate(suggestions[1:], start=1):
+    for number, (distance, food) in enumerate(suggestions, start=1):
         print(f"{number}. {food.title():<15}"
               f"Distance: {distance}"
               f"Price ($): {MENU[food]}")
